@@ -3,58 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfólio de Danilo Cadena Lima</title>
-    
-    <link rel="stylesheet" href="styles.css">
+    <title>Portfólio | Danilo Cadena Lima</title>
+    <!-- Chosen Palette: Cool Gray & Slate Blue -->
+    <!-- Application Structure Plan: This is a Single-Page Application (SPA). The main view displays all sections (About, Projects, etc.). Clicking a project card dynamically hides the main view and shows a detailed view for that specific project, populated from a JavaScript data object. This creates a seamless, app-like experience without page reloads, effectively translating the multi-page concept from the scope into a modern, user-friendly interactive structure. -->
+    <!-- Visualization & Content Choices: Report Info (Project list) -> Goal (Organize & Detail) -> Presentation (Interactive Cards & Dynamic Detail View) -> Interaction (Click to show/hide views) -> Justification (Separates summary from detail, focuses user attention, and provides an organized exploration path) -> Library/Method (Vanilla JavaScript for DOM manipulation, Tailwind CSS for layout. No complex charts or SVG needed for this content.) -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="text-slate-700">
 
-    <div class="container">
+    <!-- Container Principal -->
+    <div id="app-container" class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
 
-        <header>
-            <img src="images/foto-perfil.jpeg" alt="Foto profissional de Danilo Cadena Lima" id="foto-perfil">
+        <!-- ===== VISÃO PRINCIPAL (HOME) ===== -->
+        <div id="main-view">
+            <!-- 1. Seção de Apresentação -->
+            <header class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 mb-12 section-fade-in">
+                <img src="images/foto-perfil.jpeg" alt="Foto profissional de Danilo Cadena Lima" class="w-32 h-32 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-white shadow-lg">
+                <div class="text-center sm:text-left">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Danilo Cadena Lima</h1>
+                    <p class="text-lg text-slate-600 mt-1">Estudante de Estatística e Engenharia de Computação | Desenvolvedor</p>
+                    <div class="flex justify-center sm:justify-start gap-4 mt-4 text-sm">
+                        <a href="[URL_DO_SEU_LINKEDIN]" target="_blank" class="font-semibold text-sky-600 hover:text-sky-700 transition">LinkedIn</a>
+                        <span class="text-slate-300">|</span>
+                        <a href="[URL_DO_SEU_GITHUB]" target="_blank" class="font-semibold text-sky-600 hover:text-sky-700 transition">GitHub</a>
+                        <span class="text-slate-300">|</span>
+                        <a href="mailto:[SEU_EMAIL@exemplo.com]" class="font-semibold text-sky-600 hover:text-sky-700 transition">Email</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 2. Seção Sobre Mim -->
+            <section id="sobre-mim" class="bg-white p-6 rounded-lg shadow-md mb-12 section-fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-2xl font-bold text-slate-800 mb-3">Sobre Mim</h2>
+                <p class="text-slate-600 leading-relaxed">Olá! Sou o Danilo e fico grato pelo seu interesse. Sou movido por desafios, tanto ao explorar novas tecnologias quanto ao aprofundar meus conhecimentos nas que já domino. Com uma base sólida em linguagens como Python e C, e em constante aprendizado com C++, R e Java, busco aplicar minha curiosidade em projetos inovadores. Fora da tecnologia, sou uma pessoa comunicativa e colaborativa, sempre pronto para trabalhar em equipe. Sinta-se à vontade para se conectar através dos links acima.</p>
+            </section>
+
+            <!-- 3. Seção de Idiomas -->
+            <section id="idiomas" class="bg-white p-6 rounded-lg shadow-md mb-12 section-fade-in" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">Idiomas</h2>
+                <div class="space-y-3">
+                    <div>
+                        <h3 class="font-semibold text-slate-700">Inglês – Proficiência Avançada</h3>
+                        <p class="text-sm text-slate-500">
+                            Certificação TOEFL iBT: <strong class="font-bold">Score [93 ou 94]</strong> (Realizado em [Mês/Ano do teste])
+                            <a href="certificados/toefl-certificado.pdf" target="_blank" class="text-sky-600 hover:underline text-sm font-semibold ml-2">[Ver Certificado]</a>
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-slate-700">Português – Nativo</h3>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-slate-700">Alemão – Nível Básico/Iniciante</h3>
+                        <p class="text-sm text-slate-500">Em aprendizado contínuo.</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-slate-700">Japonês – Nível Básico/Iniciante</h3>
+                        <p class="text-sm text-slate-500">Em aprendizado contínuo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Seção de Projetos -->
+            <section id="projetos" class="mb-12 section-fade-in" style="animation-delay: 0.6s;">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">Projetos</h2>
+                <div id="project-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Os cards dos projetos serão inseridos aqui pelo JavaScript -->
+                </div>
+            </section>
+
+            <!-- 5. Seção de Cursos e Formação -->
+            <section id="cursos" class="bg-white p-6 rounded-lg shadow-md mb-12 section-fade-in" style="animation-delay: 0.8s;">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">Cursos e Formação</h2>
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="font-bold text-slate-700">Formação Acadêmica</h3>
+                        <p class="text-sm text-slate-500">Estatística e Engenharia de Computação | [Nome da Universidade]</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <h3 class="font-bold text-slate-700">Cursos e Minicursos Relevantes</h3>
+                        <ul class="list-disc list-inside text-slate-600 mt-2 space-y-2">
+                            <li>
+                                <span>[Nome do Curso 1] - [Instituição/Plataforma]</span>
+                                <a href="certificados/nome-do-arquivo-1.pdf" target="_blank" class="text-sky-600 hover:underline text-sm font-semibold ml-2">[Ver Certificado]</a>
+                            </li>
+                            <li>
+                                <span>[Nome do Minicurso 2] - [Instituição/Plataforma]</span>
+                                <a href="certificados/nome-do-arquivo-2.pdf" target="_blank" class="text-sky-600 hover:underline text-sm font-semibold ml-2">[Ver Certificado]</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
             
-            <h1>Danilo Cadena Lima</h1>
-            <p>Desenvolvedor | Estudante de Estatística e Engenharia de Computação</p>
-            <p>Email: Dancadlim@gmail.com | LinkedIn: <a href="URL_DO_SEU_LINKEDIN" target="_blank">seu-linkedin</a></p>
-        </header>
-
-        <main>
-            <section id="sobre-mim" class="secao">
-                <h2>Sobre Mim</h2>
-                <p>
-                    Olá! Sou um estudante de Estatística pela Universidade Federal da Bahia e Engenharia de Computação pela Universidade Senai Cimatec. 
-                </p>
-            </section>
-        
-            <section id="projetos" class="secao">
-                <h2>Meus Projetos</h2>
-        
-                <div class="projeto">
-                    <h3> Maria Madalena</h3>
-                    <p>Chat bot inteligente de coleta de dados</p>
-                    <a href="URL_DO_PROJETO" target="_blank">Ver detalhes do projeto</a>
-                </div>
-        
-                <div class="projeto">
-                    <h3>Entrevista para texto estruturado</h3>
-                    <p>Transcreve audios para texto e depois de texto para texto estruturado</p>
-                    <a href="URL_DO_PROJETO" target="_blank">Ver detalhes do projeto</a>
-                </div>
-            </section>
-        
-            <section id="certificados" class="secao">
-                <h2>Certificados</h2>
-                <ul>
-                    <li><a href="URL_PDF_1" target="_blank">Nome do Certificado 1 - Instituição (Ano)</a></li>
-                    <li><a href="URL_PDF_2" target="_blank">Nome do Certificado 2 - Instituição (Ano)</a></li>
+            <!-- 6. Seção de Certificados de Olimpíadas -->
+            <section id="certificados" class="bg-white p-6 rounded-lg shadow-md section-fade-in" style="animation-delay: 1.0s;">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">Certificados de Olimpíadas</h2>
+                <p class="text-sm text-slate-500 mb-4">Conquistas notáveis durante o ensino médio em competições de conhecimento.</p>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li><a href="certificados/nome-do-arquivo-3.pdf" target="_blank" class="text-sky-600 hover:underline">[Nome da Olimpíada/Certificado 1]</a></li>
+                    <li><a href="certificados/nome-do-arquivo-4.pdf" target="_blank" class="text-sky-600 hover:underline">[Nome da Olimpíada/Certificado 2]</a></li>
+                    <li><a href="certificados/nome-do-arquivo-5.pdf" target="_blank" class="text-sky-600 hover:underline">[Nome da Olimpíada/Certificado 3]</a></li>
+                    <li><a href="certificados/nome-do-arquivo-6.pdf" target="_blank" class="text-sky-600 hover:underline">[Nome da Olimpíada/Certificado 4]</a></li>
+                    <li><a href="certificados/nome-do-arquivo-7.pdf" target="_blank" class="text-sky-600 hover:underline">[Nome da Olimpíada/Certificado 5]</a></li>
                 </ul>
             </section>
-        </main>
-        
-        <footer>
-            <p>&copy; 2025 - Danilo Cadena Lima</p>
-        </footer>
+        </div>
 
-    </div> </body>
+        <!-- ===== VISÃO DE DETALHES DO PROJETO (Inicialmente Oculta) ===== -->
+        <div id="project-detail-view" class="hidden">
+            <!-- O conteúdo será inserido aqui pelo JavaScript -->
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const projectsData = [
+                {
+                    id: 'maria-madalena',
+                    title: 'Maria Madalena',
+                    shortDescription: '[Escreva aqui uma frase sobre o projeto Maria Madalena.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
+                    technologies: ['Tecnologia A', 'Tecnologia B', 'Framework C'],
+                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: 'https://www.youtube.com/watch?v=BU-w2_Aae54'
+                },
+                {
+                    id: 'tate',
+                    title: 'TATE',
+                    subtitle: 'Transcritor de Áudio para Texto Estruturado',
+                    shortDescription: '[Escreva aqui uma frase sobre o projeto TATE.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
+                    technologies: ['Python', 'API de Transcrição', 'Processamento de Linguagem Natural'],
+                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: '' 
+                },
+                {
+                    id: 'analise-dados-1',
+                    title: 'Análise de Dados 1',
+                    shortDescription: '[Escreva aqui uma frase sobre o primeiro projeto de análise de dados.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
+                    technologies: ['Python', 'Pandas', 'Matplotlib', 'Jupyter Notebook'],
+                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: ''
+                },
+                {
+                    id: 'analise-dados-2',
+                    title: 'Análise de Dados 2',
+                    shortDescription: '[Escreva aqui uma frase sobre o segundo projeto de análise de dados.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
+                    technologies: ['R', 'ggplot2', 'dplyr', 'R Markdown'],
+                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: ''
+                },
+                {
+                    id: 'persona-secreta',
+                    title: 'PersonaSecreta',
+                    shortDescription: '[Escreva aqui uma frase sobre o projeto PersonaSecreta.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
+                    technologies: ['Tecnologia X', 'Tecnologia Y', 'Banco de Dados Z'],
+                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: 'https://www.youtube.com/watch?v=BU-w2_Aae54'
+                },
+                {
+                    id: 'site-2',
+                    title: 'Site 2',
+                    shortDescription: '[Escreva aqui uma frase sobre o segundo projeto de site.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
+                    technologies: ['HTML5', 'CSS3', 'JavaScript', 'Tailwind CSS'],
+                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: 'https://www.youtube.com/watch?v=BU-w2_Aae54'
+                },
+                {
+                    id: 'gemio-digital',
+                    title: 'Gêmio Digital',
+                    shortDescription: '[Escreva aqui uma frase sobre o projeto Gêmio Digital.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é (um "digital twin"), qual problema ele resolve (ex: simulação, otimização) e para quem ele se destina.]',
+                    technologies: ['Simulação', 'Modelagem 3D', 'Análise de Dados em Tempo Real', 'Python'],
+                    challenges: '[Detalhe aqui os desafios técnicos, como a integração de dados em tempo real ou a precisão do modelo, e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: ''
+                },
+                {
+                    id: 'narra-play',
+                    title: 'NarraPlay',
+                    shortDescription: '[Escreva aqui uma frase sobre o projeto NarraPlay.]',
+                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve (ex: narração de partidas esportivas) e para quem ele se destina.]',
+                    technologies: ['IA Generativa', 'Síntese de Voz', 'Processamento de Dados Esportivos', 'Python'],
+                    challenges: '[Detalhe aqui os desafios técnicos, como a geração de uma narração natural e emocionante, e o que aprendeu no processo.]',
+                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
+                    liveUrl: ''
+                }
+            ];
+
+            const mainView = document.getElementById('main-view');
+            const detailView = document.getElementById('project-detail-view');
+            const projectGallery = document.getElementById('project-gallery');
+
+            function renderProjectGallery() {
+                projectGallery.innerHTML = '';
+                projectsData.forEach(project => {
+                    const card = document.createElement('div');
+                    card.className = 'project-card bg-white p-6 rounded-lg shadow-md cursor-pointer flex flex-col justify-between';
+                    card.dataset.projectId = project.id;
+
+                    card.innerHTML = `
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800">${project.title}</h3>
+                            ${project.subtitle ? `<p class="text-sm text-slate-500 mb-2">${project.subtitle}</p>` : ''}
+                            <p class="text-slate-600 text-sm mb-4">${project.shortDescription}</p>
+                        </div>
+                        <span class="text-sky-600 font-semibold text-sm self-start">Ver detalhes do projeto →</span>
+                    `;
+                    projectGallery.appendChild(card);
+                });
+            }
+
+            function showProjectDetail(projectId) {
+                const project = projectsData.find(p => p.id === projectId);
+                if (!project) return;
+
+                let technologiesHtml = project.technologies.map(tech => `<li class="bg-slate-200 text-slate-700 text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full">${tech}</li>`).join('');
+                
+                let linksHtml = `<a href="${project.githubUrl}" target="_blank" class="inline-block bg-slate-700 text-white font-bold py-2 px-4 rounded hover:bg-slate-800 transition">Ver código no GitHub</a>`;
+                if (project.liveUrl) {
+                    linksHtml += `<a href="${project.liveUrl}" target="_blank" class="inline-block bg-sky-600 text-white font-bold py-2 px-4 rounded hover:bg-sky-700 transition ml-4">Acessar Aplicação</a>`;
+                }
+
+                detailView.innerHTML = `
+                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg section-fade-in">
+                        <button id="back-to-main" class="text-sky-600 font-semibold text-sm mb-6">← Voltar para a página inicial</button>
+                        <h1 class="text-3xl font-bold text-slate-800">${project.title}</h1>
+                        ${project.subtitle ? `<p class="text-lg text-slate-500 mb-6">${project.subtitle}</p>` : '<div class="mb-6"></div>'}
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-700 mb-2">Sobre o Projeto</h2>
+                                <p class="text-slate-600 leading-relaxed">${project.longDescription}</p>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-700 mb-2">Tecnologias Utilizadas</h2>
+                                <ul class="flex flex-wrap">${technologiesHtml}</ul>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-700 mb-2">Desafios e Aprendizados</h2>
+                                <p class="text-slate-600 leading-relaxed">${project.challenges}</p>
+                            </div>
+                            <div class="pt-4 border-t">
+                                ${linksHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                mainView.classList.add('hidden');
+                detailView.classList.remove('hidden');
+
+                document.getElementById('back-to-main').addEventListener('click', showMainView);
+            }
+
+            function showMainView() {
+                detailView.classList.add('hidden');
+                mainView.classList.remove('hidden');
+                window.scrollTo(0, 0);
+            }
+
+            renderProjectGallery();
+
+            projectGallery.addEventListener('click', (e) => {
+                const card = e.target.closest('.project-card');
+                if (card) {
+                    showProjectDetail(card.dataset.projectId);
+                }
+            });
+        });
+    </script>
+</body>
 </html>
+
