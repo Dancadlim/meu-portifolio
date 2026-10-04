@@ -1,317 +1,1157 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfólio | Danilo Cadena Lima</title>
-    <!-- Chosen Palette: Cool Gray & Slate Blue -->
-    <!-- Application Structure Plan: This is a Single-Page Application (SPA). The main view displays all sections (About, Projects, etc.). Clicking a project card dynamically hides the main view and shows a detailed view for that specific project, populated from a JavaScript data object. This creates a seamless, app-like experience without page reloads, effectively translating the multi-page concept from the scope into a modern, user-friendly interactive structure. -->
-    <!-- Visualization & Content Choices: Report Info (Project list) -> Goal (Organize & Detail) -> Presentation (Interactive Cards & Dynamic Detail View) -> Interaction (Click to show/hide views) -> Justification (Separates summary from detail, focuses user attention, and provides an organized exploration path) -> Library/Method (Vanilla JavaScript for DOM manipulation, Tailwind CSS for layout. No complex charts or SVG needed for this content.) -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>Danilo Cadena Lima | AI & Data Science Portfolio</title>
+    <meta name="description" content="Portfólio de Danilo Cadena Lima - Estudante de Estatística (UFBA) e Engenharia de Computação (SENAI CIMATEC), especialista em Sistemas Multiagentes, LLMs e Ciência de Dados. Atualmente em intercâmbio na Alemanha.">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#082f49',
+                        },
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
         }
-        .project-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
         }
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        .card-hover {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .section-fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.8s ease forwards;
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(15 23 42 / 0.08), 0 8px 10px -6px rgb(15 23 42 / 0.04);
         }
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .badge-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
     </style>
 </head>
-<body class="text-slate-700">
+<body class="text-slate-800 antialiased selection:bg-sky-500 selection:text-white">
 
-    <!-- Container Principal -->
-    <div id="app-container" class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+    <!-- Top Navigation Bar with Language Switcher -->
+    <nav class="sticky top-0 z-40 w-full glass-panel border-b border-slate-200/80 transition-all">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="font-bold text-lg sm:text-xl text-slate-900 tracking-tight flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center text-sm font-black shadow-md shadow-sky-600/20">D</span>
+                <span>Danilo <span class="text-sky-600 font-medium">Cadena Lima</span></span>
+            </a>
 
-        <!-- ===== VISÃO PRINCIPAL (HOME) ===== -->
-        <div id="main-view">
-            <!-- 1. Seção de Apresentação -->
-            <header class="flex flex-col sm:flex-row items-center gap-6 sm:gap-8 mb-12 section-fade-in">
-                <img src="images/foto-perfil.jpeg" alt="Foto profissional de Danilo Cadena Lima" class="w-32 h-32 sm:w-36 sm:h-36 rounded-full object-cover border-4 border-white shadow-lg">
-                <div class="text-center sm:text-left">
-                    <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Danilo Cadena Lima</h1>
-                    <p class="text-lg text-slate-600 mt-1">Estudante de Estatística e Engenharia de Computação | Desenvolvedor</p>
-                    <div class="flex justify-center sm:justify-start gap-4 mt-4 text-sm">
-                        <a href="[URL_DO_SEU_LINKEDIN]" target="_blank" class="font-semibold text-sky-600 hover:text-sky-700 transition">LinkedIn</a>
-                        <span class="text-slate-300">|</span>
-                        <a href="[URL_DO_SEU_GITHUB]" target="_blank" class="font-semibold text-sky-600 hover:text-sky-700 transition">GitHub</a>
-                        <span class="text-slate-300">|</span>
-                        <a href="mailto:Dancadlim@gmail.com" class="font-semibold text-sky-600 hover:text-sky-700 transition">Email</a>
+            <div class="flex items-center gap-3 sm:gap-6">
+                <div class="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
+                    <a href="#about" class="hover:text-sky-600 transition" data-i18n="nav.about">Sobre</a>
+                    <a href="#projects" class="hover:text-sky-600 transition" data-i18n="nav.projects">Projetos</a>
+                    <a href="#education" class="hover:text-sky-600 transition" data-i18n="nav.education">Formação</a>
+                    <a href="#languages" class="hover:text-sky-600 transition" data-i18n="nav.languages">Idiomas</a>
+                    <a href="#awards" class="hover:text-sky-600 transition" data-i18n="nav.awards">Conquistas</a>
+                </div>
+
+                <!-- Language Toggle Button -->
+                <div class="flex items-center bg-slate-100 p-1 rounded-full border border-slate-200">
+                    <button id="lang-pt" onclick="switchLanguage('pt')" class="px-2.5 py-1 text-xs font-semibold rounded-full transition flex items-center gap-1.5 shadow-sm bg-white text-slate-900">
+                        <span>🇧🇷</span> <span>PT</span>
+                    </button>
+                    <button id="lang-en" onclick="switchLanguage('en')" class="px-2.5 py-1 text-xs font-semibold rounded-full transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+                        <span>🇺🇸</span> <span>EN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- 1. HERO / APRESENTAÇÃO -->
+        <section id="hero" class="relative overflow-hidden bg-gradient-to-br from-white via-sky-50/40 to-slate-100/60 rounded-3xl p-6 sm:p-10 md:p-12 border border-slate-200/80 shadow-sm">
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                <!-- Foto de Perfil com Anel de Status -->
+                <div class="relative shrink-0">
+                    <div class="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden border-4 border-white shadow-xl shadow-slate-900/10">
+                        <img src="images/foto-perfil.jpeg" alt="Danilo Cadena Lima" class="w-full h-full object-cover object-top">
+                    </div>
+                    <!-- Status de Intercâmbio TU Dortmund -->
+                    <div class="absolute -bottom-2 -right-2 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-md flex items-center gap-2 text-xs font-semibold text-slate-800">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 badge-pulse"></span>
+                        <span data-i18n="hero.badge">TU Dortmund 🇩🇪</span>
                     </div>
                 </div>
-            </header>
 
-            <!-- 2. Seção Sobre Mim -->
-            <section id="sobre-mim" class="bg-white p-6 rounded-lg shadow-md mb-12 section-fade-in" style="animation-delay: 0.2s;">
-                <h2 class="text-2xl font-bold text-slate-800 mb-3">Sobre Mim</h2>
-                <p class="text-slate-600 leading-relaxed">Olá! Sou o Danilo e fico grato pelo seu interesse. Sou movido por desafios, tanto ao explorar novas tecnologias quanto ao aprofundar meus conhecimentos nas que já domino. Com uma base sólida em linguagens como Python e C, e em constante aprendizado com C++, R e Java, busco aplicar minha curiosidade em projetos inovadores. Fora da tecnologia, sou uma pessoa comunicativa e colaborativa, sempre pronto para trabalhar em equipe. Sinta-se à vontade para se conectar através dos links acima.</p>
-            </section>
+                <!-- Bio & Destaques Rápidos -->
+                <div class="text-center md:text-left flex-1 space-y-4">
+                    <div class="inline-flex flex-wrap items-center justify-center md:justify-start gap-2">
+                        <span class="px-3 py-1 bg-amber-100/80 text-amber-800 rounded-full text-xs font-semibold border border-amber-200/60" data-i18n="hero.tag_dortmund">TU Dortmund 🇩🇪 (1 ano em Data Science)</span>
+                        <span class="px-3 py-1 bg-sky-100/80 text-sky-800 rounded-full text-xs font-semibold border border-sky-200/60" data-i18n="hero.tag1">Estatística (3º/4 anos - UFBA)</span>
+                        <span class="px-3 py-1 bg-indigo-100/80 text-indigo-800 rounded-full text-xs font-semibold border border-indigo-200/60" data-i18n="hero.tag2">Eng. Computação (3º/5 anos - CIMATEC)</span>
+                        <span class="px-3 py-1 bg-emerald-100/80 text-emerald-800 rounded-full text-xs font-semibold border border-emerald-200/60" data-i18n="hero.tag3">TOEFL iBT 93 (C1)</span>
+                    </div>
 
-            <!-- 3. Seção de Idiomas -->
-            <section id="idiomas" class="bg-white p-6 rounded-lg shadow-md mb-12 section-fade-in" style="animation-delay: 0.4s;">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4">Idiomas</h2>
-                <div class="space-y-3">
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">
+                        Danilo Cadena Lima
+                    </h1>
+
+                    <p class="text-lg sm:text-xl font-medium text-slate-700" data-i18n="hero.subtitle">
+                        Estatística Aplicada & Data Science | Intercâmbio de 1 ano na TU Dortmund 🇩🇪 | Análise Estatística Automatizada & Python
+                    </p>
+
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl" data-i18n="hero.description">
+                        Estudante do 3º ano de Estatística na UFBA e 3º ano de Engenharia de Computação no SENAI CIMATEC, atualmente em intercâmbio acadêmico de 1 ano focado em Data Science na TU Dortmund, na Alemanha. Foco na união entre o rigor da probabilidade e inferência estatística com automação em Python e R, construindo pipelines de dados reprodutíveis e ferramentas analíticas.
+                    </p>
+
+                    <!-- Links & CTAs -->
+                    <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+                        <a href="https://github.com/Dancadlim" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-sm hover:shadow">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            <span>GitHub (Dancadlim)</span>
+                        </a>
+                        <a href="https://linkedin.com/in/danilocadenalima" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sky-600 text-white text-sm font-semibold hover:bg-sky-700 transition shadow-sm hover:shadow">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="mailto:Dancadlim@gmail.com" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition shadow-sm">
+                            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <span>Dancadlim@gmail.com</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. RESUMO E DIFERENCIAIS TÉCNICOS (SOBRE MIM) -->
+        <section id="about" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5 text-sky-600 font-bold text-sm uppercase tracking-wider">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <span data-i18n="about.label">Perfil</span>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900" data-i18n="about.title">Sobre Mim</h2>
+                <div class="text-slate-600 leading-relaxed space-y-3 text-sm sm:text-base" data-i18n="about.body">
+                    <p>
+                        Olá! Sou o Danilo. Minha formação une duas frentes complementares: estou no <strong>3º de 4 anos do Bacharelado em Estatística na UFBA</strong> e no <strong>3º de 5 anos de Engenharia de Computação no SENAI CIMATEC</strong>.
+                    </p>
+                    <p>
+                        Atualmente, estou na Alemanha em um <strong>intercâmbio acadêmico de 1 ano na TU Dortmund</strong>, aprofundando meus estudos especificamente em <strong>Data Science</strong>, métodos computacionais de modelagem e inferência estatística.
+                    </p>
+                    <p>
+                        Minha atuação prática é voltada para <strong>análise estatística automatizada, probabilidade e inferência</strong> com Python e R. Já apliquei esses métodos na resolução de problemas corporativos reais para a multinacional <strong>Equifax</strong> na UFBA, desenvolvi pipelines de geração e validação de provas e fórmulas matemáticas em LaTeX (projeto PIBIC) e atuo no ecossistema CIMATEC Startups. Valorizo rigor analítico, clareza metodológica e atenção aos detalhes.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card de Competências-Chave (100% dinâmico com i18n) -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-850 text-white rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col justify-between">
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-sky-400 font-semibold" data-i18n="skills.header">Competências</span>
+                    <h3 class="text-xl font-bold mt-1 text-white" data-i18n="skills.title">Habilidades Práticas</h3>
+                    
+                    <div class="mt-4 space-y-3 text-sm">
+                        <div>
+                            <span class="text-slate-400 text-xs block" data-i18n="skills.cat1">Estatística & Ciência de Dados:</span>
+                            <span class="font-medium text-slate-200" data-i18n="skills.val1">Probabilidade, Inferência Estatística, Testes de Hipóteses, Análise Automatizada, Python (Pandas, SciPy, Statsmodels), R.</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-xs block" data-i18n="skills.cat2">Automação & Pipelines Analíticos:</span>
+                            <span class="font-medium text-slate-200" data-i18n="skills.val2">Extração Estruturada (JSON), Validação de LaTeX, Workflows Multiagentes (CrewAI), Integração com APIs.</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 text-xs block" data-i18n="skills.cat3">Fundamentos de Computação:</span>
+                            <span class="font-medium text-slate-200" data-i18n="skills.val3">Estruturas de Dados, Algoritmos, C++, Java, Git, Streamlit, Jupyter Notebooks.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400">
+                    <span data-i18n="skills.verified">Projetos públicos com código aberto</span>
+                    <span class="text-emerald-400 font-semibold" data-i18n="skills.repos">GitHub Ativo</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PROJETOS (FILTRÁVEIS E INTERATIVOS) -->
+        <section id="projects" class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-sky-600 font-bold text-sm uppercase tracking-wider">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                        <span data-i18n="projects.label">Portfólio de Engenharia</span>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight" data-i18n="projects.title">Projetos em Destaque</h2>
+                </div>
+
+                <!-- Filtros por Categoria -->
+                <div class="flex flex-wrap gap-2 text-xs font-semibold" id="filter-buttons">
+                    <button onclick="filterProjects('all')" class="filter-btn active px-3 py-1.5 rounded-lg bg-slate-900 text-white transition" data-filter="all" data-i18n="filter.all">Todos</button>
+                    <button onclick="filterProjects('ai')" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition" data-filter="ai" data-i18n="filter.ai">IA & Multiagentes</button>
+                    <button onclick="filterProjects('data')" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition" data-filter="data" data-i18n="filter.data">Estatística & Dados</button>
+                    <button onclick="filterProjects('software')" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition" data-filter="software" data-i18n="filter.software">Eng. de Software</button>
+                </div>
+            </div>
+
+            <!-- Grid de Projetos -->
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Inserido dinamicamente via JS com suporte a tradução -->
+            </div>
+        </section>
+
+        <!-- 4. FORMAÇÃO ACADÊMICA & INTERCÂMBIO -->
+        <section id="education" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex items-center gap-2 text-sky-600 font-bold text-sm uppercase tracking-wider">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                <span data-i18n="edu.label">Trajetória Acadêmica</span>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900" data-i18n="edu.title">Formação Acadêmica & Vivência Internacional</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Item 1: Intercâmbio na Alemanha - TU Dortmund -->
+                <div class="p-5 rounded-xl bg-gradient-to-br from-amber-50/60 to-white border border-amber-200/70 relative">
+                    <span class="inline-block px-2.5 py-0.5 text-xs font-bold rounded-full bg-amber-100 text-amber-800 mb-3" data-i18n="edu.item1.badge">Intercâmbio Internacional 🇩🇪</span>
+                    <h3 class="font-bold text-slate-900 text-base" data-i18n="edu.item1.degree">TU Dortmund (Alemanha)</h3>
+                    <p class="text-xs text-slate-500 mt-0.5" data-i18n="edu.item1.sub">Dortmund, Alemanha • 2026 - Presente</p>
+                    <p class="text-slate-600 text-xs sm:text-sm mt-3 leading-relaxed" data-i18n="edu.item1.desc">
+                        Intercâmbio acadêmico internacional na Technische Universität Dortmund, com foco em computação e estatística em ambiente global.
+                    </p>
+                </div>
+
+                <!-- Item 2: Estatística UFBA -->
+                <div class="p-5 rounded-xl bg-slate-50/80 border border-slate-200">
+                    <span class="inline-block px-2.5 py-0.5 text-xs font-bold rounded-full bg-sky-100 text-sky-800 mb-3" data-i18n="edu.item2.badge">Graduação</span>
+                    <h3 class="font-bold text-slate-900 text-base" data-i18n="edu.item2.degree">Bacharelado em Estatística</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Universidade Federal da Bahia (UFBA)</p>
+                    <p class="text-slate-600 text-xs sm:text-sm mt-3 leading-relaxed" data-i18n="edu.item2.desc">
+                        Foco em probabilidade, inferência estatística, modelos preditivos, cálculo estocástico, R e Python para modelagem matemática.
+                    </p>
+                </div>
+
+                <!-- Item 3: Eng Computação CIMATEC -->
+                <div class="p-5 rounded-xl bg-slate-50/80 border border-slate-200">
+                    <span class="inline-block px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800 mb-3" data-i18n="edu.item3.badge">Graduação</span>
+                    <h3 class="font-bold text-slate-900 text-base" data-i18n="edu.item3.degree">Engenharia de Computação</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Centro Universitário SENAI CIMATEC</p>
+                    <p class="text-slate-600 text-xs sm:text-sm mt-3 leading-relaxed" data-i18n="edu.item3.desc">
+                        Arquitetura de computadores, algoritmos e estruturas de dados, sistemas distribuídos, desenvolvimento de software e IA.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cursos Extracurriculares Relevantes -->
+            <div class="pt-4 border-t border-slate-100">
+                <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-3" data-i18n="edu.extra.title">Capacitações e Minicursos Técnicos</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-200/60">
+                        <span class="text-sky-600 font-bold">⚡</span>
+                        <div>
+                            <p class="font-semibold text-slate-800" data-i18n="edu.course1.title">Lógica de Programação e Estruturas de Dados (C++)</p>
+                            <p class="text-xs text-slate-500">UFBA (30h) • <a href="certificados/Certificado_curso_C++.pdf" target="_blank" class="text-sky-600 hover:underline font-semibold" data-i18n="common.viewcert">Ver Certificado</a></p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-200/60">
+                        <span class="text-sky-600 font-bold">🤖</span>
+                        <div>
+                            <p class="font-semibold text-slate-800" data-i18n="edu.course2.title">Soluções Inteligentes para Pesquisa em APIs de LLMs</p>
+                            <p class="text-xs text-slate-500">UFBA (4h) • <a href="certificados/Certificado_Minicurso_LLMs.pdf" target="_blank" class="text-sky-600 hover:underline font-semibold" data-i18n="common.viewcert">Ver Certificado</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. IDIOMAS E COMUNICAÇÃO GLOBAL -->
+        <section id="languages" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex items-center gap-2 text-sky-600 font-bold text-sm uppercase tracking-wider">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+                <span data-i18n="lang.label">Perfil Multilíngue</span>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900" data-i18n="lang.title">Proficiência em Idiomas</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Inglês (C1) -->
+                <div class="p-5 rounded-xl border-2 border-sky-500/20 bg-sky-50/40 relative flex flex-col justify-between">
                     <div>
-                        <h3 class="font-semibold text-slate-700">Inglês – Proficiência Avançada</h3>
-                        <p class="text-sm text-slate-500">
-                            Certificação TOEFL iBT: <strong class="font-bold">Score 93</strong> (Realizado em Março/2024)
-                            <a href="certificados/TOEFL.pdf" target="_blank" class="text-sky-600 hover:underline text-sm font-semibold ml-2">[Ver Certificado]</a>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🇺🇸</span>
+                            <span class="px-2 py-0.5 text-xs font-black rounded-md bg-sky-600 text-white">CEFR C1</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mt-2" data-i18n="lang.en.title">Inglês</h3>
+                        <p class="text-xs text-sky-700 font-medium" data-i18n="lang.en.status">Proficiência Avançada (Fluente)</p>
+                        <p class="text-xs text-slate-600 mt-2">
+                            TOEFL iBT Score: <strong>93 pontos</strong>
                         </p>
                     </div>
-                    <div>
-                        <h3 class="font-semibold text-slate-700">Português – Nativo</h3>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-slate-700">Alemão – Nível Básico/Iniciante</h3>
-                        <p class="text-sm text-slate-500">Em aprendizado contínuo.</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-slate-700">Japonês – Nível Básico/Iniciante</h3>
-                        <p class="text-sm text-slate-500">Em aprendizado contínuo.</p>
+                    <div class="mt-4 pt-3 border-t border-sky-200/60">
+                        <a href="certificados/TOEFL.pdf" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:text-sky-800" data-i18n="common.viewcert">
+                            <span>Ver Certificado Oficial</span> →
+                        </a>
                     </div>
                 </div>
-            </section>
 
-            <!-- 4. Seção de Projetos -->
-            <section id="projetos" class="mb-12 section-fade-in" style="animation-delay: 0.6s;">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4">Projetos</h2>
-                <div id="project-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Os cards dos projetos serão inseridos aqui pelo JavaScript -->
+                <!-- Espanhol -->
+                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🇪🇸</span>
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-md bg-slate-200 text-slate-800">B1 / B2.1</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mt-2" data-i18n="lang.es.title">Espanhol</h3>
+                        <p class="text-xs text-slate-600 font-medium" data-i18n="lang.es.status">Intermediário Avançado</p>
+                        <p class="text-xs text-slate-500 mt-2" data-i18n="lang.es.desc">
+                            Atestado B1 por avaliação universitária; conclusão do certificado oficial B2.1 ao fim deste semestre.
+                        </p>
+                    </div>
                 </div>
-            </section>
 
-            <!-- 5. Seção de Cursos e Formação -->
-            <section id="cursos" class="bg-white p-6 rounded-lg shadow-md mb-12 section-fade-in" style="animation-delay: 0.8s;">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4">Cursos e Formação</h2>
-                <div class="space-y-4">
+                <!-- Alemão -->
+                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/80 flex flex-col justify-between">
                     <div>
-                        <h3 class="font-bold text-slate-700">Formação Acadêmica</h3>
-                        <p class="text-sm text-slate-500">Cursando Estatística (Universidade Federal da Bahia) e Engenharia de Computação (Universidade Senai Cimatec)</p>
-                    </div>
-                    <hr>
-                    <div>
-                        <h3 class="font-bold text-slate-700">Cursos e Minicursos Relevantes</h3>
-                        <ul class="list-disc list-inside text-slate-600 mt-2 space-y-2">
-                            <li>
-                                <span>Capacitação em Lógica de Programação e Estrutura de Dados (C++) - UFBA (30h)</span>
-                                <a href="certificados/Certificado_curso_C++.pdf" target="_blank" class="text-sky-600 hover:underline text-sm font-semibold ml-2">[Ver Certificado]</a>
-                            </li>
-                            <li>
-                                <span>Minicurso: Soluções Inteligentes para Pesquisa em APIs de LLMs - UFBA (4h)</span>
-                                <a href="certificados/Certificado_Minicurso_LLMs.pdf" target="_blank" class="text-sky-600 hover:underline text-sm font-semibold ml-2">[Ver Certificado]</a>
-                            </li>
-                        </ul>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🇩🇪</span>
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-md bg-amber-100 text-amber-800">A1 / A2</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mt-2" data-i18n="lang.de.title">Alemão</h3>
+                        <p class="text-xs text-slate-600 font-medium" data-i18n="lang.de.status">Básico / Em Imersão</p>
+                        <p class="text-xs text-slate-500 mt-2" data-i18n="lang.de.desc">
+                            Em desenvolvimento diário durante intercâmbio acadêmico na Alemanha. Conclusão prevista A1/A2 no semestre.
+                        </p>
                     </div>
                 </div>
-            </section>
-            
-            <!-- 6. Seção de Certificados de Olimpíadas -->
-            <section id="certificados" class="bg-white p-6 rounded-lg shadow-md section-fade-in" style="animation-delay: 1.0s;">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4">Certificados de Olimpíadas</h2>
-                <p class="text-sm text-slate-500 mb-4">Conquistas notáveis durante o ensino médio em competições de conhecimento.</p>
-                <ul class="list-disc list-inside text-slate-600 space-y-2">
-                    <li><a href="certificados/ONC2023.pdf" target="_blank" class="text-sky-600 hover:underline">Olimpíada Nacional de Ciências (ONC) 2023 - Medalha de Ouro</a></li>
-                    <li><a href="certificados/OBG2023.pdf" target="_blank" class="text-sky-600 hover:underline">Olimpíada Brasileira de Geografia (OBG) 2023 - Medalha de Ouro</a></li>
-                    <li><a href="certificados/OBA2023.pdf" target="_blank" class="text-sky-600 hover:underline">Olimpíada Brasileira de Astronomia (OBA) 2023 - Medalha de Bronze</a></li>
-                    <li><a href="certificados/NASA2023.pdf" target="_blank" class="text-sky-600 hover:underline">Caça Asteroides MCTI (NASA Partner) 2023 - Participação</a></li>
-                    <li><a href="certificados/Canguru_2021.pdf" target="_blank" class="text-sky-600 hover:underline">Concurso Canguru de Matemática 2021 - Honra ao Mérito</a></li>
-                </ul>
-            </section>
+
+                <!-- Português & Japonês -->
+                <div class="p-5 rounded-xl border border-slate-200 bg-slate-50/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl">🇧🇷 🇯🇵</span>
+                            <span class="px-2 py-0.5 text-xs font-bold rounded-md bg-slate-200 text-slate-800">Nativo / A1</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mt-2" data-i18n="lang.ptja.title">Português & Japonês</h3>
+                        <p class="text-xs text-slate-600 font-medium" data-i18n="lang.ptja.status">Português Nativo</p>
+                        <p class="text-xs text-slate-500 mt-2" data-i18n="lang.ptja.desc">
+                            Japonês em nível iniciante para estudos autônomos de vocabulário e lógica gramatical.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CERTIFICAÇÕES & PREMIAÇÕES OLÍMPICAS (STEM & ANALYTICAL PROWESS) -->
+        <section id="awards" class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex items-center gap-2 text-sky-600 font-bold text-sm uppercase tracking-wider">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                <span data-i18n="awards.label">Raciocínio Lógico & STEM</span>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900" data-i18n="awards.title">Olimpíadas Científicas & Premiações Nacionais</h2>
+                <p class="text-sm text-slate-500 mt-1" data-i18n="awards.subtitle">Comprovação de rigor analítico, raciocínio hipotético-dedutivo e capacidade de resolução de problemas complexos.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- ONC 2023 - Ouro -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200/60">
+                    <span class="text-2xl">🥇</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base" data-i18n="awards.onc.title">Olimpíada Nacional de Ciências (ONC 2023)</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800" data-i18n="awards.gold">Ouro</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1" data-i18n="awards.onc.desc">Medalha de Ouro em âmbito nacional avaliando física, química, biologia e raciocínio científico multidisciplinar.</p>
+                        <a href="certificados/ONC2023.pdf" target="_blank" class="inline-block mt-2 text-xs font-semibold text-sky-600 hover:underline" data-i18n="common.viewcert">Ver Certificado</a>
+                    </div>
+                </div>
+
+                <!-- OBG 2023 - Ouro -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200/60">
+                    <span class="text-2xl">🥇</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base" data-i18n="awards.obg.title">Olimpíada Brasileira de Geografia (OBG 2023)</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800" data-i18n="awards.gold">Ouro</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1" data-i18n="awards.obg.desc">Medalha de Ouro nacional envolvendo análise geoespacial, dados demográficos e geopolítica analítica.</p>
+                        <a href="certificados/OBG2023.pdf" target="_blank" class="inline-block mt-2 text-xs font-semibold text-sky-600 hover:underline" data-i18n="common.viewcert">Ver Certificado</a>
+                    </div>
+                </div>
+
+                <!-- OBA 2023 - Bronze -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/70">
+                    <span class="text-2xl">🥉</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base" data-i18n="awards.oba.title">Olimpíada Brasileira de Astronomia (OBA 2023)</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-800" data-i18n="awards.bronze">Bronze</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1" data-i18n="awards.oba.desc">Medalha de Bronze avaliando mecânica celeste, astrofísica e cálculos astronômicos.</p>
+                        <a href="certificados/OBA2023.pdf" target="_blank" class="inline-block mt-2 text-xs font-semibold text-sky-600 hover:underline" data-i18n="common.viewcert">Ver Certificado</a>
+                    </div>
+                </div>
+
+                <!-- Canguru de Matemática -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/70">
+                    <span class="text-2xl">🦘</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base" data-i18n="awards.canguru.title">Concurso Canguru de Matemática 2021</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-800" data-i18n="awards.merit">Honra ao Mérito</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1" data-i18n="awards.canguru.desc">Reconhecimento internacional por excelência em raciocínio combinatório e lógico-matemático.</p>
+                        <a href="certificados/Canguru_2021.pdf" target="_blank" class="inline-block mt-2 text-xs font-semibold text-sky-600 hover:underline" data-i18n="common.viewcert">Ver Certificado</a>
+                    </div>
+                </div>
+
+                <!-- NASA Partner / Caça Asteroides -->
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/70 md:col-span-2">
+                    <span class="text-2xl">🚀</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-sm sm:text-base" data-i18n="awards.nasa.title">Programa Caça Asteroides MCTI / IASC (NASA Partner) 2023</h3>
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-800" data-i18n="awards.cert">Certificado de Participação</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1" data-i18n="awards.nasa.desc">Análise de dados de imagens telescópicas astronômicas reais em busca de corpos celestes e novos asteroides não catalogados.</p>
+                        <a href="certificados/NASA2023.pdf" target="_blank" class="inline-block mt-2 text-xs font-semibold text-sky-600 hover:underline" data-i18n="common.viewcert">Ver Certificado</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal de Detalhes do Projeto -->
+    <div id="project-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative border border-slate-200">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2 rounded-lg bg-slate-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div id="modal-content">
+                <!-- Inserido dinamicamente -->
+            </div>
         </div>
-
-        <!-- ===== VISÃO DE DETALHES DO PROJETO (Inicialmente Oculta) ===== -->
-        <div id="project-detail-view" class="hidden">
-            <!-- O conteúdo será inserido aqui pelo JavaScript -->
-        </div>
-
     </div>
 
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white py-10 mt-20 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 space-y-2">
+            <p class="font-semibold text-slate-700">Danilo Cadena Lima • Portfólio de Engenharia, IA & Estatística</p>
+            <p data-i18n="footer.desc">Salvador, Brasil & Alemanha • Disponível para oportunidades em IA, RLHF, Avaliação de Modelos e Ciência de Dados.</p>
+            <p class="pt-2 text-slate-400">© 2026 Danilo Cadena Lima. Desenvolvido com foco em clareza técnica e arquitetura de agentes.</p>
+        </div>
+    </footer>
+
+    <!-- Dados dos Projetos e Lógica de Tradução & Filtros -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        const i18n = {
+            pt: {
+                "nav.about": "Sobre",
+                "nav.projects": "Projetos",
+                "nav.education": "Formação",
+                "nav.languages": "Idiomas",
+                "nav.awards": "Conquistas",
+                "hero.badge": "TU Dortmund 🇩🇪",
+                "hero.tag_dortmund": "TU Dortmund 🇩🇪 (1 ano em Data Science)",
+                "hero.tag1": "Estatística (3º/4 anos - UFBA)",
+                "hero.tag2": "Eng. Computação (3º/5 anos - CIMATEC)",
+                "hero.tag3": "TOEFL iBT 93 (C1)",
+                "hero.subtitle": "Estatística Aplicada & Data Science | Intercâmbio de 1 ano na TU Dortmund 🇩🇪 | Análise Estatística Automatizada & Python",
+                "hero.description": "Estudante do 3º ano de Estatística na UFBA e 3º ano de Engenharia de Computação no SENAI CIMATEC, atualmente em intercâmbio acadêmico de 1 ano focado em Data Science na TU Dortmund, na Alemanha. Foco na união entre o rigor da probabilidade e inferência estatística com automação em Python e R, construindo pipelines de dados reprodutíveis e ferramentas analíticas.",
+                "about.label": "Perfil",
+                "about.title": "Sobre Mim",
+                "about.body": `
+                    <p>Olá! Sou o Danilo. Minha formação une duas frentes complementares: estou no <strong>3º de 4 anos do Bacharelado em Estatística na UFBA</strong> e no <strong>3º de 5 anos de Engenharia de Computação no SENAI CIMATEC</strong>.</p>
+                    <p>Atualmente, estou na Alemanha em um <strong>intercâmbio acadêmico de 1 ano na TU Dortmund</strong>, aprofundando meus estudos especificamente em <strong>Data Science</strong>, métodos computacionais de modelagem e inferência estatística.</p>
+                    <p>Minha atuação prática é voltada para <strong>análise estatística automatizada, probabilidade e inferência</strong> com Python e R. Já apliquei esses métodos na resolução de problemas corporativos reais para a multinacional <strong>Equifax</strong> na UFBA, desenvolvi pipelines de geração e validação de provas e fórmulas matemáticas em LaTeX (projeto PIBIC) e atuo no ecossistema CIMATEC Startups. Valorizo rigor analítico, clareza metodológica e atenção aos detalhes.</p>
+                `,
+                "skills.header": "Competências",
+                "skills.title": "Habilidades Práticas",
+                "skills.cat1": "Estatística & Ciência de Dados:",
+                "skills.val1": "Probabilidade, Inferência Estatística, Testes de Hipóteses, Análise Automatizada, Python (Pandas, SciPy, Statsmodels), R.",
+                "skills.cat2": "Automação & Pipelines Analíticos:",
+                "skills.val2": "Extração Estruturada (JSON), Validação de LaTeX, Workflows Multiagentes (CrewAI), Integração com APIs.",
+                "skills.cat3": "Fundamentos de Computação:",
+                "skills.val3": "Estruturas de Dados, Algoritmos, C++, Java, Git, Streamlit, Jupyter Notebooks.",
+                "skills.verified": "Projetos públicos com código aberto",
+                "skills.repos": "GitHub Ativo",
+                "projects.label": "Portfólio de Engenharia",
+                "projects.title": "Projetos em Destaque",
+                "filter.all": "Todos",
+                "filter.ai": "IA & Multiagentes",
+                "filter.data": "Estatística & Dados",
+                "filter.software": "Eng. de Software",
+                "edu.label": "Trajetória Acadêmica",
+                "edu.title": "Formação Acadêmica & Vivência Internacional",
+                "edu.item1.badge": "Intercâmbio Internacional 🇩🇪",
+                "edu.item1.degree": "TU Dortmund (Alemanha)",
+                "edu.item1.sub": "Dortmund, Alemanha • Intercâmbio 2026 - 2027",
+                "edu.item1.desc": "Intercâmbio acadêmico de 1 ano focado em Data Science, computação estatística e métodos avançados de análise de dados na TU Dortmund.",
+                "edu.item2.badge": "Graduação",
+                "edu.item2.degree": "Bacharelado em Estatística (3º de 4 anos)",
+                "edu.item2.desc": "UFBA • Conclusão prevista em 2027. Foco em probabilidade teórica e aplicada, inferência estatística, modelos preditivos, cálculo estocástico, R e Python.",
+                "edu.item3.badge": "Graduação & Inovação",
+                "edu.item3.degree": "Engenharia de Computação (3º de 5 anos)",
+                "edu.item3.desc": "SENAI CIMATEC • Conclusão prevista em 2028. Estruturas de dados, algoritmos e computação aplicada. Membro do ecossistema de inovação CIMATEC Startups.",
+                "edu.extra.title": "Capacitações e Minicursos Técnicos",
+                "edu.course1.title": "Lógica de Programação e Estruturas de Dados (C++)",
+                "edu.course2.title": "Soluções Inteligentes para Pesquisa em APIs de LLMs",
+                "lang.label": "Perfil Multilíngue",
+                "lang.title": "Proficiência em Idiomas",
+                "lang.en.title": "Inglês",
+                "lang.en.status": "Proficiência Avançada (Fluente)",
+                "lang.es.title": "Espanhol",
+                "lang.es.status": "Intermediário Avançado",
+                "lang.es.desc": "Atestado B1 por avaliação universitária; conclusão do certificado oficial B2.1 ao fim deste semestre.",
+                "lang.de.title": "Alemão",
+                "lang.de.status": "Básico / Em Imersão",
+                "lang.de.desc": "Em desenvolvimento diário durante intercâmbio acadêmico na Alemanha. Conclusão prevista A1/A2 no semestre.",
+                "lang.ptja.title": "Português & Japonês",
+                "lang.ptja.status": "Português Nativo",
+                "lang.ptja.desc": "Japonês em nível iniciante para estudos autônomos de vocabulário e lógica gramatical.",
+                "awards.label": "Raciocínio Lógico & STEM",
+                "awards.title": "Olimpíadas Científicas & Premiações Nacionais",
+                "awards.subtitle": "Comprovação de rigor analítico, raciocínio hipotético-dedutivo e capacidade de resolução de problemas complexos.",
+                "awards.gold": "Ouro",
+                "awards.bronze": "Bronze",
+                "awards.merit": "Honra ao Mérito",
+                "awards.cert": "Certificado",
+                "awards.onc.title": "Olimpíada Nacional de Ciências (ONC 2023)",
+                "awards.onc.desc": "Medalha de Ouro em âmbito nacional avaliando física, química, biologia e raciocínio científico multidisciplinar.",
+                "awards.obg.title": "Olimpíada Brasileira de Geografia (OBG 2023)",
+                "awards.obg.desc": "Medalha de Ouro nacional envolvendo análise geoespacial, dados demográficos e geopolítica analítica.",
+                "awards.oba.title": "Olimpíada Brasileira de Astronomia (OBA 2023)",
+                "awards.oba.desc": "Medalha de Bronze avaliando mecânica celeste, astrofísica e cálculos astronômicos.",
+                "awards.canguru.title": "Concurso Canguru de Matemática 2021",
+                "awards.canguru.desc": "Reconhecimento internacional por excelência em raciocínio combinatório e lógico-matemático.",
+                "awards.nasa.title": "Programa Caça Asteroides MCTI / IASC (NASA Partner) 2023",
+                "awards.nasa.desc": "Análise de dados de imagens telescópicas astronômicas reais em busca de corpos celestes e novos asteroides não catalogados.",
+                "common.viewcert": "Ver Certificado",
+                "common.viewcode": "Ver Código",
+                "common.livedemo": "Acessar Aplicação",
+                "common.viewdetails": "Ver arquitetura & detalhes →",
+                "footer.desc": "Salvador, Brasil & TU Dortmund, Alemanha • Projetos em Estatística, Data Science e IA."
+            },
+            en: {
+                "nav.about": "About",
+                "nav.projects": "Projects",
+                "nav.education": "Education",
+                "nav.languages": "Languages",
+                "nav.awards": "Awards",
+                "hero.badge": "TU Dortmund 🇩🇪",
+                "hero.tag_dortmund": "TU Dortmund 🇩🇪 (1-Yr Data Science Exchange)",
+                "hero.tag1": "Statistics (3rd/4 yrs - UFBA)",
+                "hero.tag2": "Computer Eng. (3rd/5 yrs - CIMATEC)",
+                "hero.tag3": "TOEFL iBT 93 (C1)",
+                "hero.subtitle": "Applied Statistics & Data Science | 1-Year Exchange at TU Dortmund 🇩🇪 | Automated Statistical Analysis & Python",
+                "hero.description": "Undergraduate student in the 3rd year of Statistics (UFBA) and 3rd year of Computer Engineering (SENAI CIMATEC), currently on a 1-year academic exchange in Data Science at TU Dortmund in Germany. My focus lies in uniting probability theory and statistical inference with Python and R automation, building reproducible data pipelines and technical evaluation workflows.",
+                "about.label": "Profile",
+                "about.title": "About Me",
+                "about.body": `
+                    <p>Hi! I'm Danilo. My academic journey is built on two complementary pillars: I am in the <strong>3rd of 4 years of a B.Sc. in Statistics at UFBA</strong> and <strong>3rd of 5 years of Computer Engineering at SENAI CIMATEC</strong>.</p>
+                    <p>Currently, I am in Germany for a <strong>1-year academic exchange at TU Dortmund</strong>, specializing in <strong>Data Science</strong>, statistical computing, and quantitative data modeling.</p>
+                    <p>My hands-on experience centers on <strong>automated statistical analysis, probability theory, inference pipelines</strong>, and scientific computing with Python and R. I have analyzed corporate credit and risk datasets for global company <strong>Equifax</strong> at UFBA, built automated LaTeX verification engines for mathematical STEM materials (PIBIC project), and developed solutions within the CIMATEC Startups program. I prioritize analytical rigor, methodological integrity, and attention to detail.</p>
+                `,
+                "skills.header": "Competencies",
+                "skills.title": "Practical Skills",
+                "skills.cat1": "Statistics & Data Science:",
+                "skills.val1": "Probability Theory, Statistical Inference, Hypothesis Testing, Automated Analysis, Python (Pandas, SciPy, Statsmodels), R.",
+                "skills.cat2": "Automation & Analytical Pipelines:",
+                "skills.val2": "Structured JSON Extraction, LaTeX Sanitization & Validation, Multi-Agent Workflows (CrewAI), API Integration.",
+                "skills.cat3": "Computer Science Fundamentals:",
+                "skills.val3": "Data Structures, Algorithms, C++, Java, Git, Streamlit, Jupyter Notebooks.",
+                "skills.verified": "Public projects with open-source code",
+                "skills.repos": "Active GitHub",
+                "projects.label": "Engineering Portfolio",
+                "projects.title": "Featured Projects",
+                "filter.all": "All",
+                "filter.ai": "AI & Multi-Agents",
+                "filter.data": "Statistics & Data",
+                "filter.software": "Software Eng.",
+                "edu.label": "Academic Background",
+                "edu.title": "Academic Education & Global Experience",
+                "edu.item1.badge": "International Exchange 🇩🇪",
+                "edu.item1.degree": "TU Dortmund (Germany)",
+                "edu.item1.sub": "Dortmund, Germany • Exchange 2026 - 2027",
+                "edu.item1.desc": "1-year academic exchange focusing on Data Science, statistical computing, and advanced quantitative methodologies at TU Dortmund.",
+                "edu.item2.badge": "Undergraduate",
+                "edu.item2.degree": "B.Sc. in Statistics (3rd of 4 Years)",
+                "edu.item2.desc": "UFBA • Expected graduation 2027. Core focus on probability theory, statistical inference, predictive modeling, stochastic calculus, R, and Python.",
+                "edu.item3.badge": "Undergraduate & Innovation",
+                "edu.item3.degree": "B.Sc. in Computer Engineering (3rd of 5 Years)",
+                "edu.item3.desc": "SENAI CIMATEC • Expected graduation 2028. Algorithms, systems architecture, and software engineering. Member of the CIMATEC Startups ecosystem.",
+                "edu.extra.title": "Technical Training & University Workshops",
+                "edu.course1.title": "Programming Logic & Data Structures (C++)",
+                "edu.course2.title": "Intelligent Solutions for LLM API Research",
+                "lang.label": "Multilingual Profile",
+                "lang.title": "Language Proficiency",
+                "lang.en.title": "English",
+                "lang.en.status": "Advanced Proficiency (Fluent)",
+                "lang.es.title": "Spanish",
+                "lang.es.status": "Intermediate-Advanced",
+                "lang.es.desc": "Tested B1 by university assessment; obtaining official B2.1 certification by the end of this academic semester.",
+                "lang.de.title": "German",
+                "lang.de.status": "Basic / Active Immersion",
+                "lang.de.desc": "Daily continuous learning through academic exchange in Germany. Target level A1/A2 by semester completion.",
+                "lang.ptja.title": "Portuguese & Japanese",
+                "lang.ptja.status": "Portuguese Native",
+                "lang.ptja.desc": "Japanese at beginner level for self-guided study of vocabulary and grammatical structure.",
+                "awards.label": "Logical Reasoning & STEM",
+                "awards.title": "Scientific Olympiads & National Awards",
+                "awards.subtitle": "Proof of analytical depth, scientific deduction, and complex problem-solving capabilities.",
+                "awards.gold": "Gold",
+                "awards.bronze": "Bronze",
+                "awards.merit": "Honorable Mention",
+                "awards.cert": "Certificate",
+                "awards.onc.title": "National Science Olympiad (ONC 2023)",
+                "awards.onc.desc": "National Gold Medal evaluating multidisciplinary physics, chemistry, biology, and scientific reasoning.",
+                "awards.obg.title": "Brazilian Olympiad of Geography (OBG 2023)",
+                "awards.obg.desc": "National Gold Medal covering geospatial data analysis, demographics, and analytical geopolitics.",
+                "awards.oba.title": "Brazilian Olympiad of Astronomy (OBA 2023)",
+                "awards.oba.desc": "Bronze Medal evaluating celestial mechanics, astrophysics, and astronomical computations.",
+                "awards.canguru.title": "Kangaroo Math Competition 2021",
+                "awards.canguru.desc": "International recognition for excellence in combinatorics and mathematical problem solving.",
+                "awards.nasa.title": "Asteroid Search Campaign MCTI / IASC (NASA Partner) 2023",
+                "awards.nasa.desc": "Astronomical data analysis of telescope images to detect uncatalogued celestial bodies and asteroids.",
+                "common.viewcert": "View Certificate",
+                "common.viewcode": "View Code",
+                "common.livedemo": "Live Demo",
+                "common.viewdetails": "View Architecture & Details →",
+                "footer.desc": "Salvador, Brazil & TU Dortmund, Germany • Projects in AI, RLHF, Model Evaluation, and Data Science."
+            }
+        };
 
-            const projectsData = [
-                {
-                    id: 'maria-madalena',
-                    title: 'Maria Madalena',
-                    shortDescription: 'Desenvolvimento de um chatbot inteligente para coleta de dados.',
-                    longDescription: 'Desenvolvimento de um chatbot conversacional que coleta e estrutura informações do usuário de forma lúdica e humanizada, simplificando a posterior análise de dados.',
-                    technologies: ['IA Generativa', 'Python', 'Streamlit', 'Firebase'],
-                    challenges: 'O principal desafio foi o aprofundamento em Python e Streamlit para garantir uma implementação robusta e uma experiência de usuário fluida.',
-                    githubUrl: 'https://github.com/conselheiramariamadalena/mariamadalena',
-                    liveUrl: 'https://mariamadalena.streamlit.app/'
+        const projects = [
+            {
+                id: 'pibic',
+                category: 'ai',
+                title: {
+                    pt: 'Plataforma Multiagente de Aulas Universitárias (PIBIC)',
+                    en: 'University Lecture Multi-Agent System (PIBIC)'
                 },
-                {
-                    id: 'tate',
-                    title: 'TATE',
-                    subtitle: 'Transcritor de Áudio para Texto Estruturado',
-                    shortDescription: 'Ferramenta para transcrição e estruturação de áudio em texto.',
-                    longDescription: 'Este projeto oferece uma alternativa a entrevistas tradicionais, transcrevendo respostas de áudio e utilizando o Gemini 2.5 Flash para estruturar os dados em um modelo pré-definido, otimizando a análise.',
-                    technologies: ['Python', 'Google Gemini 2.5 Flash', 'Google Colab'],
-                    challenges: 'O desafio metodológico foi incentivar respostas abertas e detalhadas dos usuários, visando capturar insights mais ricos e diferenciados que uma entrevista estruturada.',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: '' 
+                subtitle: {
+                    pt: 'Orquestração autônoma de múltiplos agentes com validação LaTeX para cursos STEM',
+                    en: 'Autonomous multi-agent pipeline with LaTeX compilation validation for STEM'
                 },
-                {
-                    id: 'analise-dados-1',
-                    title: 'Análise de Dados 1',
-                    shortDescription: '[Escreva aqui uma frase sobre o primeiro projeto de análise de dados.]',
-                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
-                    technologies: ['Python', 'Pandas', 'Matplotlib', 'Jupyter Notebook'],
-                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: ''
+                shortDesc: {
+                    pt: 'Sistema autônomo com múltiplos agentes de IA (Roteirista, Extrator, Validador LaTeX e Simulador) que gera material didático universitário de alta densidade matemática.',
+                    en: 'Multi-agent autonomous system (Screenwriter, Extractor, LaTeX Validator, Simulator) generating university-level STEM lecture content with mathematical rigor.'
                 },
-                {
-                    id: 'analise-dados-2',
-                    title: 'Análise de Dados 2',
-                    shortDescription: '[Escreva aqui uma frase sobre o segundo projeto de análise de dados.]',
-                    longDescription: '[Parágrafo explicando o que o projeto é, qual problema ele resolve e para quem ele se destina.]',
-                    technologies: ['R', 'ggplot2', 'dplyr', 'R Markdown'],
-                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: ''
+                longDesc: {
+                    pt: 'Projeto de Iniciação Científica (PIBIC) desenvolvido para resolver a escassez de material didático altamente estruturado em disciplinas universitárias exatas (Probabilidade, Estatística, Álgebra Linear). O backend orquestra múltiplos agentes especializados que dividem a ementa, criam exercícios graduados com gabarito analítico e sanitizam fórmulas em LaTeX através de um validador automatizado com mecanismos de retry e tolerância a falhas na API Gemini.',
+                    en: 'Scientific Initiation project designed to automate high-density didactic material for undergraduate STEM courses (Probability, Statistics, Linear Algebra). The backend orchestrates specialized agents that parse course syllabi, generate graded mathematical exercises with step-by-step proofs, and validate LaTeX syntax via automated sanitization and retry logic against the Google Gemini API.'
                 },
-                {
-                    id: 'persona-secreta',
-                    title: 'Persona Secreta',
-                    shortDescription: 'Jogo interativo de adivinhação de personagens com IA.',
-                    longDescription: 'Um jogo que explora a capacidade do Google Gemini em personificar personagens, criando uma experiência lúdica e divertida de adivinhação através de um diálogo interativo.',
-                    technologies: ['Python', 'Google Gemini 2.5 Flash', 'Streamlit', 'Firebase'],
-                    challenges: 'O maior desafio técnico foi a engenharia de prompt para calibrar a dificuldade do jogo, garantindo que a IA incorporasse o personagem de forma convincente sem revelar sua identidade prematuramente.',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: 'https://joguinho.streamlit.app/'
+                tech: ['Python', 'Multi-Agent Systems', 'Google Gemini API', 'LaTeX Sanitizer', 'Pydantic', 'FastAPI'],
+                highlights: {
+                    pt: [
+                        'Arquitetura de agentes especializados: Macro Roteirista, Extrator de Conceitos, Gerador de Exercícios e Revisor de Notação.',
+                        'Módulo próprio de sanitização e verificação de compilação LaTeX contra erros sintáticos comuns em LLMs.',
+                        'Estruturas de dados tipadas com Pydantic e sistema resiliente de retry de requisições.'
+                    ],
+                    en: [
+                        'Multi-agent role separation: Macro Screenwriter, Concept Extractor, Exercise Generator, and Mathematical Notation Reviewer.',
+                        'Custom LaTeX sanitization and compilation verification engine guarding against LLM mathematical syntax bugs.',
+                        'Strong typed schemas with Pydantic and fault-tolerant retry mechanism for Gemini API calls.'
+                    ]
                 },
-                {
-                    id: 'site-2',
-                    title: 'Site 2',
-                    shortDescription: 'Jogo de mistério e investigação narrado por IA.',
-                    longDescription: 'Um jogo de detetive onde o Google Gemini atua como narrador, gerando cenários de mistério que os jogadores resolvem através de perguntas de "sim" ou "não".',
-                    technologies: ['Python', 'Google Gemini', 'Streamlit', 'Firebase'],
-                    challenges: '[Detalhe aqui os desafios técnicos que enfrentou e o que aprendeu no processo.]',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: 'https://www.youtube.com/watch?v=BU-w2_Aae54'
+                github: 'https://github.com/Dancadlim/PIBIC',
+                live: ''
+            },
+            {
+                id: 'avaliador-ideias',
+                category: 'ai',
+                title: {
+                    pt: 'Avaliador de Projetos & Roteiros com CrewAI',
+                    en: 'CrewAI Project & Screenplay Evaluator'
                 },
-                {
-                    id: 'gemio-digital',
-                    title: 'Gêmio Digital',
-                    shortDescription: 'Desenvolvimento de um assistente pessoal baseado em IA.',
-                    longDescription: 'Primeira fase de um assistente digital pessoal, onde uma IA é treinada para simular um estilo de comunicação específico, capaz de responder mensagens curtas de forma autônoma e personalizada.',
-                    technologies: ['IA Generativa', 'Fine-tuning', 'Processamento de Linguagem Natural', 'Python'],
-                    challenges: 'O principal desafio foi fornecer o contexto necessário e refinar o modelo para que a IA mantivesse a persona do usuário de forma consistente, evitando respostas genéricas e replicando o estilo conversacional humano.',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: ''
+                subtitle: {
+                    pt: 'Banca autônoma de agentes para crítica lógica, psicológica e de mercado',
+                    en: 'Autonomous agent council for logical consistency, character depth, and market viability'
                 },
-                {
-                    id: 'narra-play',
-                    title: 'NarraPlay',
-                    shortDescription: 'Plataforma de audiolivros gerados por IA.',
-                    longDescription: 'Plataforma que utiliza IA generativa para criar e narrar histórias de diversos gêneros, oferecendo uma experiência de audiolivro sob demanda para diferentes públicos.',
-                    technologies: ['IA Generativa', 'Síntese de Voz', 'Python', 'Streamlit'],
-                    challenges: '[Detalhe aqui os desafios técnicos, como a geração de uma narração natural e emocionante, e o que aprendeu no processo.]',
-                    githubUrl: 'https://docs.github.com/pt/repositories/creating-and-managing-repositories/quickstart-for-repositories',
-                    liveUrl: ''
-                }
-            ];
+                shortDesc: {
+                    pt: 'Plataforma baseada em CrewAI e Gemini 2.5 Flash onde um conselho de agentes especializados audita furos de roteiro, consistência psicológica e potencial comercial.',
+                    en: 'CrewAI + Gemini 2.5 Flash system where specialized agents audit logic plot holes, psychological character depth, and commercial viability.'
+                },
+                longDesc: {
+                    pt: 'Aplicação que utiliza o framework CrewAI para simular uma equipe editorial profissional completa. O usuário insere premissas de projetos e histórias, e uma equipe de agentes — Crítico Estrutural (lógica e furos), Psicólogo de Personagens (profundidade emocional), Agente Literário (potencial comercial) e Editor-Chefe Sênior — analisa o texto de forma colaborativa e produz um Relatório Executivo consolidado com pontos críticos e plano de ação.',
+                    en: 'Application utilizing CrewAI to simulate an elite editorial board. A user provides narrative concepts or project outlines, and specialized agents — Structural Critic (logical plot holes), Character Psychologist (emotional resonance), Literary Agent (market potential), and Senior Editor-in-Chief — collaborate sequentially to output an executive report with critical recommendations.'
+                },
+                tech: ['CrewAI', 'Google Gemini 2.5 Flash', 'Python', 'Streamlit', 'Prompt Architecture'],
+                highlights: {
+                    pt: [
+                        'Orquestração de agentes autônomos com papéis (roles), metas (goals) e backstories distintos.',
+                        'Consolidação de pareceres independentes em relatório executivo unificado formatado em Markdown.',
+                        'Interface ágil em Streamlit com injeção segura de credenciais.'
+                    ],
+                    en: [
+                        'Autonomous agent orchestration with distinct roles, goals, and backstories.',
+                        'Synthesis of multi-perspective critiques into an actionable Markdown executive brief.',
+                        'Streamlit web dashboard with secure API key management.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim/avaliador-ideias',
+                live: ''
+            },
+            {
+                id: 'my-personal-team',
+                category: 'software',
+                title: {
+                    pt: 'MyPersonalTeam (CIMATEC Startups)',
+                    en: 'MyPersonalTeam (CIMATEC Startups)'
+                },
+                subtitle: {
+                    pt: 'Projeto no ecossistema CIMATEC Startups • Fullstack React 19 & Google GenAI',
+                    en: 'Incubated at CIMATEC Startups • Fullstack React 19 & Google GenAI'
+                },
+                shortDesc: {
+                    pt: 'Projeto desenvolvido no programa de inovação CIMATEC Startups. Plataforma web em React 19, Tailwind CSS e Framer Motion integrada ao SDK `@google/genai`.',
+                    en: 'Startup project developed within the CIMATEC Startups ecosystem. Interactive application built with React 19, Tailwind CSS, Framer Motion, and direct `@google/genai` integration.'
+                },
+                longDesc: {
+                    pt: 'Projeto desenvolvido e acelerado no ecossistema de inovação e empreendedorismo CIMATEC Startups (SENAI CIMATEC). A plataforma web permite a configuração, orquestração e interação em tempo real com personas e assistentes inteligentes customizados. Desenvolvida utilizando o ecossistema moderno do React 19 e Vite, com animações fluidas via Framer Motion, estilização com Tailwind CSS e comunicação assíncrona com os modelos Gemini mais recentes.',
+                    en: 'Startup project developed within the CIMATEC Startups technology innovation and entrepreneurship ecosystem (SENAI CIMATEC). The web platform enables configuring, orchestrating, and interacting with personalized AI assistants in real time. Built with React 19, Vite, Framer Motion, modern Tailwind CSS, and asynchronous streaming via the latest Google Gemini APIs.'
+                },
+                tech: ['CIMATEC Startups', 'React 19', 'Vite', 'Tailwind CSS', 'Framer Motion', '@google/genai SDK', 'JavaScript'],
+                highlights: {
+                    pt: [
+                        'Desenvolvido e validado dentro do ecossistema de empreendedorismo CIMATEC Startups.',
+                        'Interface moderna em React 19 com animações fluidas e design system profissional.',
+                        'Consumo direto das APIs generativas da Google através do novo pacote oficial `@google/genai`.',
+                        'Arquitetura modular de componentes em React e roteamento SPA.'
+                    ],
+                    en: [
+                        'Developed and validated within the CIMATEC Startups technology ecosystem.',
+                        'Modern React 19 UI with fluid animations and design tokens.',
+                        'Direct integration with the official `@google/genai` JavaScript SDK.',
+                        'Modular component architecture and client-side routing.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim/MyPersonalTeam',
+                live: ''
+            },
+            {
+                id: 'history-creator',
+                category: 'ai',
+                title: {
+                    pt: 'History-Creator (NarraPlay Engine)',
+                    en: 'History-Creator (NarraPlay Engine)'
+                },
+                subtitle: {
+                    pt: 'Pipeline generativo de sinopse, planejamento e roteirização em múltiplos atos',
+                    en: 'Generative pipeline for multi-act synopsis, pacing, and narrative script production'
+                },
+                shortDesc: {
+                    pt: 'Pipeline de escrita criativa com Gemini 1.5/2.0 Flash e Streamlit que transforma temas brutos em roteiros estruturados em 8 capítulos.',
+                    en: 'Creative writing pipeline using Gemini Flash and Streamlit transforming raw themes into structured 8-chapter scripts.'
+                },
+                longDesc: {
+                    pt: 'Sistema automatizado de produção textual que decompõe a criação de histórias em etapas lógicas: Agente de Sinopse (definição de tom, conflito e clímax), Agente Planejador (divisão rítmica de capítulos) e Agentes de Produção com saídas em JSON estruturado para garantir coerência de enredo.',
+                    en: 'Automated creative writing pipeline decomposing storytelling into logical phases: Synopsis Agent (setting tone and climaxes), Planner Agent (chapter pacing), and Scriptwriter Agents utilizing structured JSON outputs to preserve continuity.'
+                },
+                tech: ['Python', 'Google GenAI SDK', 'Streamlit', 'Structured Outputs (JSON)', 'Prompt Engineering'],
+                highlights: {
+                    pt: [
+                        'Geração com restrição de formato estrito (`response_mime_type: application/json`).',
+                        'Encadeamento de prompts com passagem contínua de contexto entre capítulos.',
+                        'Pronto para expansão para motores de síntese de voz (TTS).'
+                    ],
+                    en: [
+                        'Strict JSON mode constraints (`response_mime_type: application/json`).',
+                        'Multi-stage prompt chaining passing dynamic state between story beats.',
+                        'Designed for integration with text-to-speech audio synthesis pipelines.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim/History-Creator',
+                live: ''
+            },
+            {
+                id: 'maria-madalena',
+                category: 'ai',
+                title: {
+                    pt: 'Maria Madalena (Chatbot Humanizado)',
+                    en: 'Maria Madalena (Conversational AI)'
+                },
+                subtitle: {
+                    pt: 'Chatbot conversacional para coleta empática e estruturação de dados',
+                    en: 'Empathetic conversational chatbot for data collection and structured ingestion'
+                },
+                shortDesc: {
+                    pt: 'Chatbot inteligente desenvolvido para coletar e categorizar dados qualitativos através de um diálogo humanizado e acolhedor.',
+                    en: 'Intelligent chatbot designed to collect and categorize qualitative user data via natural, empathetic dialogue.'
+                },
+                longDesc: {
+                    pt: 'Aplicação desenvolvida para humanizar pesquisas e coletas de dados sensíveis. Ao invés de formulários frios, o usuário conversa com a persona Maria Madalena, que extrai as respostas necessárias, valida a coerência em tempo real e armazena os dados processados no Firebase para análise posterior.',
+                    en: 'Conversational agent built to replace impersonal survey forms. Users converse with the empathetic persona of Maria Madalena, which naturally extracts key data points, validates information coherence, and persists records into Firebase for analytics.'
+                },
+                tech: ['Python', 'Streamlit', 'Firebase', 'IA Generativa', 'Data Collection'],
+                highlights: {
+                    pt: [
+                        'Engenharia de persona conversacional empática com retenção de contexto.',
+                        'Integração e persistência em nuvem com Firebase Realtime Database.',
+                        'Aplicação em produção pública no Streamlit Community Cloud.'
+                    ],
+                    en: [
+                        'Empathetic conversational persona engineering with conversational memory.',
+                        'Cloud persistence and real-time synchronization with Firebase.',
+                        'Live production deployment on Streamlit Community Cloud.'
+                    ]
+                },
+                github: 'https://github.com/conselheiramariamadalena/mariamadalena',
+                live: 'https://mariamadalena.streamlit.app/'
+            },
+            {
+                id: 'equifax-ufba',
+                category: 'data',
+                title: {
+                    pt: 'Desafio Analítico de Negócios (Equifax & UFBA)',
+                    en: 'Business Analytics Challenge (Equifax & UFBA)'
+                },
+                subtitle: {
+                    pt: 'Resolução de problemas de dados reais para a multinacional Equifax e apresentação técnica',
+                    en: 'Real-world data problem solving for global credit bureau Equifax with technical presentation'
+                },
+                shortDesc: {
+                    pt: 'Projeto prático de resolução de problemas corporativos para a Equifax, envolvendo análise quantitativa de dados e apresentação formal na UFBA.',
+                    en: 'Hands-on corporate data problem-solving project for Equifax, involving quantitative data analysis and formal technical presentation at UFBA.'
+                },
+                longDesc: {
+                    pt: 'Iniciativa acadêmico-corporativa realizada na UFBA em parceria com a multinacional de inteligência de dados Equifax. O projeto consistiu em analisar desafios reais de negócio do setor de dados e risco, estruturar um diagnóstico quantitativo com Python e estatística, e apresentar uma solução analítica perante banca avaliadora na universidade.',
+                    en: 'Academic-industry initiative conducted at UFBA in partnership with global data intelligence company Equifax. Focused on analyzing real-world business challenges in credit and risk data, developing quantitative insights with Python and statistics, and delivering a technical presentation to an evaluation panel at UFBA.'
+                },
+                tech: ['Equifax Case', 'Python', 'Análise de Dados', 'Estatística Aplicada', 'Resolução de Problemas', 'Apresentação Técnica'],
+                highlights: {
+                    pt: [
+                        'Aplicação de análise quantitativa em desafio real do setor corporativo de dados.',
+                        'Estruturação de métricas de apoio à tomada de decisão de negócio.',
+                        'Apresentação técnica e defesa da solução desenvolvida na UFBA.'
+                    ],
+                    en: [
+                        'Quantitative data modeling applied to a corporate data and intelligence challenge.',
+                        'Formulation of data-driven decision-making metrics.',
+                        'Technical presentation and defense of the analytical solution at UFBA.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim',
+                live: ''
+            },
+            {
+                id: 'tate',
+                category: 'data',
+                title: {
+                    pt: 'TATE: Transcritor de Áudio em Texto Estruturado',
+                    en: 'TATE: Structured Audio-to-Text Transcriber'
+                },
+                subtitle: {
+                    pt: 'Extração analítica e estruturação de dados qualitativos com Gemini 2.5 Flash',
+                    en: 'Qualitative audio data extraction and schema-based parsing with Gemini 2.5 Flash'
+                },
+                shortDesc: {
+                    pt: 'Pipeline que processa áudios de entrevistas abertas e utiliza o Gemini 2.5 Flash para converter falas espontâneas em esquemas de dados prontos para análise estatística.',
+                    en: 'Pipeline converting raw spoken interviews into structured tabular schemas with Gemini 2.5 Flash ready for quantitative analysis.'
+                },
+                longDesc: {
+                    pt: 'Ferramenta desenvolvida para pesquisadores e analistas de dados. Resolve o gargalo de entrevistas abertas: transcreve a fala com fidelidade e emprega prompts de extração de entidades para mapear os dados em tabelas relacionais e esquemas JSON pré-definidos, acelerando pesquisas qualitativas e quantitativas.',
+                    en: 'Tool created for researchers and data analysts to automate the interview bottleneck. Accurately transcribes open spoken responses and leverages LLM entity extraction prompts to map unstructured transcripts into relational schemas and JSON models for statistical analysis.'
+                },
+                tech: ['Python', 'Google Gemini 2.5 Flash', 'Google Colab', 'NLP', 'Data Structuring'],
+                highlights: {
+                    pt: [
+                        'Normalização de respostas qualitativas abertas em campos tabulares objetivos.',
+                        'Eliminação de transcrição manual com redução drástica no tempo de codificação de dados.',
+                        'Arquitetura pronta para integração com modelos de probabilidade e estatística.'
+                    ],
+                    en: [
+                        'Normalization of unstructured open-ended speech into objective tabular metrics.',
+                        'Drastic reduction of manual transcription and coding overhead.',
+                        'Clean data pipeline ready for quantitative and statistical modeling.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim/meu-portifolio',
+                live: ''
+            },
+            {
+                id: 'estatistica-ufba',
+                category: 'data',
+                title: {
+                    pt: 'Modelagem Estatística & Inferência Quantitativa',
+                    en: 'Statistical Modeling & Quantitative Inference'
+                },
+                subtitle: {
+                    pt: 'Projetos acadêmicos em probabilidade, testes de hipóteses e análise exploratória',
+                    en: 'Academic research in probability theory, hypothesis testing, and exploratory analysis'
+                },
+                shortDesc: {
+                    pt: 'Análises quantitativas aprofundadas utilizando R e Python (Pandas, SciPy, ggplot2) aplicadas a distribuições probabilísticas e inferência.',
+                    en: 'Quantitative analyses utilizing R and Python (Pandas, SciPy, ggplot2) applied to probabilistic distributions and statistical inference.'
+                },
+                longDesc: {
+                    pt: 'Conjunto de estudos e scripts desenvolvidos na graduação de Estatística na UFBA. Envolve estimação pontual e intervalar, testes paramétricos e não-paramétricos, regressão linear múltipla, análise de variância (ANOVA) e simulações de Monte Carlo para validação de hipóteses teóricas e práticas.',
+                    en: 'Collection of quantitative scripts and empirical studies developed at UFBA. Encompasses point and interval estimation, parametric and non-parametric hypothesis testing, multiple linear regression, ANOVA, and Monte Carlo simulations for validating statistical theorems.'
+                },
+                tech: ['R', 'Python', 'Pandas', 'SciPy', 'ggplot2', 'Jupyter Notebook'],
+                highlights: {
+                    pt: [
+                        'Modelagem matemática fundamentada em cálculo de probabilidades e inferência.',
+                        'Simulações computacionais de Monte Carlo para verificar convergência de estimadores.',
+                        'Relatórios reprodutíveis em R Markdown e Jupyter Notebooks.'
+                    ],
+                    en: [
+                        'Rigorous mathematical modeling grounded in probability theory and inference.',
+                        'Monte Carlo numerical simulations to verify estimator asymptotic properties.',
+                        'Reproducible research reports in R Markdown and Jupyter Notebooks.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim/meu-portifolio',
+                live: ''
+            },
+            {
+                id: 'projeto-concessionaria',
+                category: 'software',
+                title: {
+                    pt: 'Sistema Concessionária (Engenharia de Software)',
+                    en: 'Dealership Management System (Software Eng.)'
+                },
+                subtitle: {
+                    pt: 'Modelagem orientada a objetos (OOP), estruturas de dados e geração de relatórios',
+                    en: 'Object-oriented programming (OOP), data structures, and automated reporting'
+                },
+                shortDesc: {
+                    pt: 'Sistema em Java com arquitetura modular em camadas, separando entidades de negócio, persistência e relatórios analíticos de veículos.',
+                    en: 'Java application featuring layered architecture, strict OOP principles, domain entities, and vehicle report generators.'
+                },
+                longDesc: {
+                    pt: 'Projeto desenvolvido no curso de Engenharia de Computação para consolidar boas práticas de Engenharia de Software e Orientação a Objetos. Implementa gerenciamento completo de frota de veículos, regras de negócio para transações financeiras, geração de relatórios de vendas e validação rígida de dados.',
+                    en: 'Software engineering project designed to apply enterprise OOP principles and clean architecture. Implements complete vehicle fleet management, transactional business logic, automated reporting generators, and rigorous input validations.'
+                },
+                tech: ['Java', 'Object-Oriented Programming (OOP)', 'Data Structures', 'Clean Architecture'],
+                highlights: {
+                    pt: [
+                        'Separação estrita de responsabilidades: pacotes `aplicacao` e `entidades`.',
+                        'Geração automática de relatórios formatados de inventário e vendas.',
+                        'Estruturas de dados robustas para filtragem e consulta eficiente.'
+                    ],
+                    en: [
+                        'Strict separation of concerns across application and domain entities.',
+                        'Automated formatting of business inventory and sales reports.',
+                        'Robust data structures supporting efficient queries.'
+                    ]
+                },
+                github: 'https://github.com/Dancadlim/Projeto-Concessionaria',
+                live: ''
+            }
+        ];
 
-            const mainView = document.getElementById('main-view');
-            const detailView = document.getElementById('project-detail-view');
-            const projectGallery = document.getElementById('project-gallery');
+        let currentLang = 'pt';
+        let currentFilter = 'all';
 
-            function renderProjectGallery() {
-                projectGallery.innerHTML = '';
-                projectsData.forEach(project => {
-                    const card = document.createElement('div');
-                    card.className = 'project-card bg-white p-6 rounded-lg shadow-md cursor-pointer flex flex-col justify-between';
-                    card.dataset.projectId = project.id;
+        function switchLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('portfolio_lang', lang);
 
-                    card.innerHTML = `
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-800">${project.title}</h3>
-                            ${project.subtitle ? `<p class="text-sm text-slate-500 mb-2">${project.subtitle}</p>` : ''}
-                            <p class="text-slate-600 text-sm mb-4">${project.shortDescription}</p>
-                        </div>
-                        <span class="text-sky-600 font-semibold text-sm self-start">Ver detalhes do projeto →</span>
-                    `;
-                    projectGallery.appendChild(card);
-                });
+            // Toggle button styles
+            const btnPt = document.getElementById('lang-pt');
+            const btnEn = document.getElementById('lang-en');
+
+            if (lang === 'pt') {
+                btnPt.className = 'px-2.5 py-1 text-xs font-semibold rounded-full transition flex items-center gap-1.5 shadow-sm bg-white text-slate-900';
+                btnEn.className = 'px-2.5 py-1 text-xs font-semibold rounded-full transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+                document.documentElement.lang = 'pt-BR';
+            } else {
+                btnEn.className = 'px-2.5 py-1 text-xs font-semibold rounded-full transition flex items-center gap-1.5 shadow-sm bg-white text-slate-900';
+                btnPt.className = 'px-2.5 py-1 text-xs font-semibold rounded-full transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+                document.documentElement.lang = 'en';
             }
 
-            function showProjectDetail(projectId) {
-                const project = projectsData.find(p => p.id === projectId);
-                if (!project) return;
-
-                let technologiesHtml = project.technologies.map(tech => `<li class="bg-slate-200 text-slate-700 text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded-full">${tech}</li>`).join('');
-                
-                let linksHtml = `<a href="${project.githubUrl}" target="_blank" class="inline-block bg-slate-700 text-white font-bold py-2 px-4 rounded hover:bg-slate-800 transition">Ver código no GitHub</a>`;
-                if (project.liveUrl) {
-                    linksHtml += `<a href="${project.liveUrl}" target="_blank" class="inline-block bg-sky-600 text-white font-bold py-2 px-4 rounded hover:bg-sky-700 transition ml-4">Acessar Aplicação</a>`;
+            // Update all static i18n tags
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.innerHTML = i18n[lang][key];
                 }
+            });
 
-                detailView.innerHTML = `
-                    <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg section-fade-in">
-                        <button id="back-to-main" class="text-sky-600 font-semibold text-sm mb-6">← Voltar para a página inicial</button>
-                        <h1 class="text-3xl font-bold text-slate-800">${project.title}</h1>
-                        ${project.subtitle ? `<p class="text-lg text-slate-500 mb-6">${project.subtitle}</p>` : '<div class="mb-6"></div>'}
-                        
-                        <div class="space-y-6">
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-700 mb-2">Sobre o Projeto</h2>
-                                <p class="text-slate-600 leading-relaxed">${project.longDescription}</p>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-700 mb-2">Tecnologias Utilizadas</h2>
-                                <ul class="flex flex-wrap">${technologiesHtml}</ul>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-700 mb-2">Desafios e Aprendizados</h2>
-                                <p class="text-slate-600 leading-relaxed">${project.challenges}</p>
-                            </div>
-                            <div class="pt-4 border-t">
-                                ${linksHtml}
-                            </div>
+            // Re-render project cards
+            renderProjects();
+        }
+
+        function filterProjects(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === filter) {
+                    btn.className = 'filter-btn active px-3 py-1.5 rounded-lg bg-slate-900 text-white transition';
+                } else {
+                    btn.className = 'filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition';
+                }
+            });
+            renderProjects();
+        }
+
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = '';
+
+            const filtered = currentFilter === 'all' 
+                ? projects 
+                : projects.filter(p => p.category === currentFilter);
+
+            filtered.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'card-hover bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between cursor-pointer';
+                card.onclick = () => openModal(project.id);
+
+                const techBadges = project.tech.slice(0, 4).map(t => 
+                    `<span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-medium code-font">${t}</span>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                                project.category === 'ai' ? 'bg-sky-100 text-sky-800' :
+                                project.category === 'data' ? 'bg-emerald-100 text-emerald-800' :
+                                'bg-indigo-100 text-indigo-800'
+                            }">${project.category === 'ai' ? 'AI & Multi-Agents' : project.category === 'data' ? 'Data & Statistics' : 'Software Eng.'}</span>
+                            <span class="text-xs text-sky-600 font-semibold flex items-center gap-1 group-hover:translate-x-1 transition">
+                                ↗
+                            </span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 leading-snug">${project.title[currentLang]}</h3>
+                        <p class="text-xs text-slate-500 font-medium">${project.subtitle[currentLang]}</p>
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">${project.shortDesc[currentLang]}</p>
+                    </div>
+
+                    <div class="pt-5 mt-5 border-t border-slate-100 space-y-3">
+                        <div class="flex flex-wrap gap-1.5">
+                            ${techBadges}
+                        </div>
+                        <div class="flex items-center justify-between text-xs font-semibold text-sky-600 pt-1">
+                            <span>${i18n[currentLang]['common.viewdetails']}</span>
                         </div>
                     </div>
                 `;
-                
-                mainView.classList.add('hidden');
-                detailView.classList.remove('hidden');
-
-                document.getElementById('back-to-main').addEventListener('click', showMainView);
-            }
-
-            function showMainView() {
-                detailView.classList.add('hidden');
-                mainView.classList.remove('hidden');
-                window.scrollTo(0, 0);
-            }
-
-            renderProjectGallery();
-
-            projectGallery.addEventListener('click', (e) => {
-                const card = e.target.closest('.project-card');
-                if (card) {
-                    showProjectDetail(card.dataset.projectId);
-                }
+                grid.appendChild(card);
             });
+        }
+
+        function openModal(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+
+            const modalContent = document.getElementById('modal-content');
+            const allTech = project.tech.map(t => `<span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-medium code-font">${t}</span>`).join('');
+            
+            const highlightsList = project.highlights[currentLang].map(h => 
+                `<li class="flex items-start gap-2 text-xs sm:text-sm text-slate-700">
+                    <span class="text-emerald-500 font-bold">✓</span>
+                    <span>${h}</span>
+                </li>`
+            ).join('');
+
+            let actionButtons = `
+                <a href="${project.github}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs sm:text-sm font-semibold hover:bg-slate-800 transition">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>${i18n[currentLang]['common.viewcode']}</span>
+                </a>
+            `;
+
+            if (project.live) {
+                actionButtons += `
+                    <a href="${project.live}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-600 text-white text-xs sm:text-sm font-semibold hover:bg-sky-700 transition">
+                        <span>${i18n[currentLang]['common.livedemo']}</span> ↗
+                    </a>
+                `;
+            }
+
+            modalContent.innerHTML = `
+                <div class="space-y-5">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                            project.category === 'ai' ? 'bg-sky-100 text-sky-800' :
+                            project.category === 'data' ? 'bg-emerald-100 text-emerald-800' :
+                            'bg-indigo-100 text-indigo-800'
+                        }">${project.category === 'ai' ? 'AI & Multi-Agents' : project.category === 'data' ? 'Data & Statistics' : 'Software Eng.'}</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-2">${project.title[currentLang]}</h2>
+                        <p class="text-sm text-slate-500 font-medium">${project.subtitle[currentLang]}</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Visão Geral / Overview</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">${project.longDesc[currentLang]}</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Destaques Técnicos & Desafios / Highlights</h4>
+                        <ul class="space-y-2">
+                            ${highlightsList}
+                        </ul>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Stack Tecnológica</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${allTech}
+                        </div>
+                    </div>
+
+                    <div class="pt-5 border-t border-slate-100 flex flex-wrap gap-3">
+                        ${actionButtons}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('project-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close on background click or ESC key
+        document.getElementById('project-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'project-modal') closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('portfolio_lang') || (window.location.hash === '#en' ? 'en' : 'pt');
+            switchLanguage(savedLang);
         });
     </script>
 </body>
 </html>
-
